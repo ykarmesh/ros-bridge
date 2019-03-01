@@ -11,17 +11,22 @@ Classes to handle Carla vehicles
 import sys
 import datetime
 import numpy
-
+import math
 from simple_pid import PID
 
 import rospy
+import tf
 from dynamic_reconfigure.server import Server
 
 from nav_msgs.msg import Odometry
 from std_msgs.msg import ColorRGBA
 from ackermann_msgs.msg import AckermannDrive
+from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Vector3Stamped
+from geometry_msgs.msg import PointStamped
 
 from carla import VehicleControl
+from carla import Vector3D
 
 from carla_ros_bridge.vehicle import Vehicle
 import carla_ros_bridge.physics as phys
@@ -29,6 +34,7 @@ from carla_ros_bridge.msg import CarlaVehicleControl  # pylint: disable=no-name-
 from carla_ros_bridge.msg import EgoVehicleControlInfo  # pylint: disable=no-name-in-module,import-error
 from carla_ros_bridge.cfg import EgoVehicleControlParameterConfig  # pylint: disable=no-name-in-module,import-error
 
+import carla_ros_bridge.transforms as trans
 
 class EgoVehicle(Vehicle):
 
@@ -53,11 +59,13 @@ class EgoVehicle(Vehicle):
             return PedalControlVehicle(carla_actor=carla_actor, parent=parent)
         elif ego_vehicle_control_mode == 'ackermann':
             return AckermannControlVehicle(carla_actor=carla_actor, parent=parent)
+        elif ego_vehicle_control_mode == 'twist':
+            return TwistControlVehicle(carla_actor=carla_actor, parent=parent)
         else:
             raise ValueError(
                 "Unsupported control mode of the ego vehicle '{}'"
                 " configured at '/carla/ego_vehicle/control_mode' parameter."
-                " Only 'pedal' or 'ackermann' allowed!".format(ego_vehicle_control_mode))
+                " Only 'pedal' or 'ackermann' or 'twist' allowed!".format(ego_vehicle_control_mode))
 
     def __init__(self, carla_actor, parent):
         """
@@ -633,3 +641,74 @@ class AckermannControlVehicle(EgoVehicle):
             self.info.output.brake, 0., 1.)
         self.info.output.throttle = numpy.clip(
             self.info.output.throttle, 0., 1.)
+
+
+class TwistControlVehicle(EgoVehicle):
+
+    """
+    Vehicle implementation details for the ego vehicle in twist control variant
+    """
+
+    def __init__(self, carla_actor, parent):
+        """
+        Constructor
+
+        :param carla_actor: carla actor object
+        :type carla_actor: carla.Actor
+        :param parent: the parent of this
+        :type parent: carla_ros_bridge.Parent
+        """
+        super(TwistControlVehicle, self).__init__(carla_actor=carla_actor,
+                                                  parent=parent)
+
+        self.control_subscriber = rospy.Subscriber(
+            self.topic_name() + "/twist_cmd",
+            Twist, self.control_command_updated)
+        
+        self.listener = tf.TransformListener()
+
+    def destroy(self):
+        """
+        Function (override) to destroy this object.
+
+        Terminate ROS subscription on CarlaVehicleControl commands.
+        Finally forward call to super class.
+
+        :return:
+        """
+        rospy.logdebug("Destroy TwistControlVehicle(id={})".format(self.get_id()))
+        self.control_subscriber = None
+        super(TwistControlVehicle, self).destroy()
+
+    def control_command_updated(self, ros_twist):
+        """
+        Receive a Twist msg and send to CARLA
+
+        This function gets called whenever a ROS message is received via
+        '/carla/ego_vehicle/twist_cmd' topic.
+        The received ROS message is converted into carla.VehicleControl command and
+        sent to CARLA.
+        This bridge is not responsible for any restrictions on velocity or steering.
+        It's just forwarding the ROS input to CARLA
+
+        :param ros_twist: twist input received via ROS
+        :type ros_twist: GeometryMsgs.Twist
+        :return:
+        """
+        transform = self.get_current_ros_transfrom()
+
+        self.listener.waitForTransform("ego_vehicle", "map", rospy.Time(0), rospy.Duration(4))
+        v3s = Vector3Stamped()
+        v3s.header.stamp = rospy.Time(0)
+        v3s.header.frame_id = "ego_vehicle"
+        v3s.vector = ros_twist.linear
+        transformedRes = self.listener.transformVector3("map", v3s)
+                        
+        carla_linear_velocity = trans.ros_vector_to_carla(transformedRes.vector)
+        
+        carla_angular_velocity = Vector3D()
+        carla_angular_velocity.z = ros_twist.angular.z
+
+        self.carla_actor.set_velocity(carla_linear_velocity)
+        self.carla_actor.set_angular_velocity(carla_angular_velocity)
+        rospy.logdebug("Set velocity linear: {}, angular: {}".format(carla_linear_velocity, carla_angular_velocity))

@@ -15,6 +15,7 @@ import numpy
 import tf
 from geometry_msgs.msg import Vector3, Quaternion, Transform, Pose, Point, Twist, Accel
 
+import carla
 
 def carla_location_to_numpy_vector(carla_location):
     """
@@ -186,25 +187,44 @@ def carla_rotation_to_directional_numpy_vector(carla_rotation):
     return rotated_directional_vector
 
 
-def carla_velocity_to_ros_twist(carla_velocity):
+def carla_to_ros_vector(carla_vector):
     """
-    Convert a carla velocity to a ROS twist
+    Convert a carla vector to a ROS Vector3
 
     Considers the conversion from left-handed system (unreal) to right-handed
     system (ROS)
-    The angular velocities remain zero.
 
-    :param carla_velocity: the carla velocity
-    :type carla_velocity: carla.Vector3D
-    :return: a ROS twist
-    :rtype: geometry_msgs.msg.Twist
+    :param carla_vector: the carla vector
+    :type carla_vector: carla.Vector3D
+    :return: a ROS Vector3
+    :rtype: geometry_msgs.msg.Vector3
     """
-    ros_twist = Twist()
-    ros_twist.linear.x = carla_velocity.x
-    ros_twist.linear.y = -carla_velocity.y
-    ros_twist.linear.z = carla_velocity.z
+    ros_vector = Vector3()
+    ros_vector.x = carla_vector.x
+    ros_vector.y = -carla_vector.y
+    ros_vector.z = carla_vector.z
 
-    return ros_twist
+    return ros_vector
+
+
+def ros_vector_to_carla(ros_vector):
+    """
+    Convert a ROS Vector3 to a carla vector 
+
+    Considers the conversion from right-handed
+    system (ROS) to left-handed system (unreal) 
+
+    :param a ROS Vector3
+    :type geometry_msgs.msg.Vector3
+    :return: carla_vector: the carla vector
+    :rtype: carla_vector: carla.Vector3D
+    """
+    carla_vector = carla.Vector3D()
+    carla_vector.x = ros_vector.x
+    carla_vector.y = -ros_vector.y
+    carla_vector.z = ros_vector.z
+
+    return carla_vector
 
 
 def carla_velocity_to_numpy_vector(carla_velocity):

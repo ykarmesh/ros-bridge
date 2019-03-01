@@ -102,20 +102,36 @@ You can then further spawn other vehicles using spawn_npc.py from CARLA Python A
 Then those vehicles will show up also on ROS side.
 
 # Test control messages
+
+## Ackermann Mode
+
 You can send command to the car using the /carla/ego_vehicle/ackermann_cmd topic.
 
-Example of forward movements, speed in in meters/sec.
+Example of forward movements, speed in meters/sec.
 
-     rostopic pub /carla/ego_vehicle/ackermann_cmd ackermann_msgs/AckermannDrive "{steering_angle: 0.0, steering_angle_velocity: 0.0, speed: 10, acceleration: 0.0,
-      jerk: 0.0}" -r 10
+     rostopic pub -r 10 /carla/ego_vehicle/ackermann_cmd ackermann_msgs/AckermannDrive "{steering_angle: 0.0, steering_angle_velocity: 0.0, speed: 10, acceleration: 0.0,
+      jerk: 0.0}"
 
 
 Example of forward with steering
 
-     rostopic pub /carla/ego_vehicle/ackermann_cmd ackermann_msgs/AckermannDrive "{steering_angle: 5.41, steering_angle_velocity: 0.0, speed: 10, acceleration: 0.0,
-      jerk: 0.0}" -r 10
+     rostopic pub -r 10 /carla/ego_vehicle/ackermann_cmd ackermann_msgs/AckermannDrive "{steering_angle: 5.41, steering_angle_velocity: 0.0, speed: 10, acceleration: 0.0,
+      jerk: 0.0}"
 
   Warning: the steering_angle is the driving angle (in radians) not the wheel angle, for now max wheel is set to 500 degrees.
+
+## Twist Mode
+
+You can send command to the car using the /carla/ego_vehicle/twist_cmd topic.
+
+Example of forward movements (linear.x in meters/sec).
+
+rostopic pub -r 10 /carla/ego_vehicle/twist_cmd geometry_msgs/Twist "{ linear: { x: 10, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 0 } }"
+
+Example of right turn with low speed (linear.x in meter/sec, angular.z in deg/s).
+
+rostopic pub -r 10 /carla/ego_vehicle/twist_cmd geometry_msgs/Twist "{ linear: { x: 1, y: 0, z: 0 }, angular: { x: 0, y: 0, z: 30 } }"
+
 
 # Test sensor messages
 

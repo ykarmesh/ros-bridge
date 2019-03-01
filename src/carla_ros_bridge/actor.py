@@ -13,6 +13,7 @@ import rospy
 
 from visualization_msgs.msg import Marker
 from std_msgs.msg import ColorRGBA
+from geometry_msgs.msg import Twist
 
 from carla_ros_bridge.child import Child
 from carla_ros_bridge.actor_id_registry import ActorIdRegistry
@@ -141,8 +142,10 @@ class Actor(Child):
         :return: the ROS twist of this actor
         :rtype: geometry_msgs.msg.Twist
         """
-        return trans.carla_velocity_to_ros_twist(
-            self.carla_actor.get_velocity())
+        ros_twist = Twist() 
+        ros_twist.linear = trans.carla_to_ros_vector(self.carla_actor.get_velocity())
+        ros_twist.angular = trans.carla_to_ros_vector(self.carla_actor.get_angular_velocity())
+        return ros_twist
 
     def get_current_ros_accel(self):
         """

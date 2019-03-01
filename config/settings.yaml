@@ -13,6 +13,7 @@ carla:
     #   to CARLA (this is the default)
     # ackermann: AckermannDrive ROS messages from /carla/ego_vehicle/ackermann_cmd provide the target values, a 
     #   cascaded PID controller tries to achieve
+    # twist: Twist ROS message from /carla/ego_vehicle/twist_cmd are forwarded to CARLA
     control_mode: ackermann
     # override the default values of the pid speed controller
     # (only relevant for ackermann control mode) 
