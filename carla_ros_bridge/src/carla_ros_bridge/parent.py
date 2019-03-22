@@ -121,6 +121,11 @@ class Parent(object):
                             else:
                                 self.new_child_actors[actor.id] = Vehicle.create_actor(
                                     carla_actor=actor, parent=self)
+                        elif actor.type_id.startswith("walker"):
+                            if actor.attributes.get('role_name') in \
+                                    self.get_param('ego_vehicle').get('role_name'):
+                                self.new_child_actors[actor.id] = Pedestrian.create_actor(
+                                    carla_actor=actor, parent=self)
                         elif actor.type_id.startswith("sensor"):
                             self.new_child_actors[actor.id] = Sensor.create_actor(
                                 carla_actor=actor, parent=self)
@@ -325,3 +330,4 @@ from carla_ros_bridge.sensor import Sensor       # noqa, pylint: disable=wrong-i
 from carla_ros_bridge.traffic import Traffic     # noqa, pylint: disable=wrong-import-position
 from carla_ros_bridge.vehicle import Vehicle     # noqa, pylint: disable=wrong-import-position
 from carla_ros_bridge.ego_vehicle import EgoVehicle  # noqa, pylint: disable=wrong-import-position
+from carla_ros_bridge.pedestrian import Pedestrian  # noqa, pylint: disable=wrong-import-position
