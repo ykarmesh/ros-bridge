@@ -7,6 +7,7 @@
 
 string type
 string rolename
+uint32 id
 CarlaEgoVehicleInfoWheel[] wheels
 float32 max_rpm
 float32 moi

@@ -113,6 +113,7 @@ class EgoVehicle(Vehicle):
             self.vehicle_info_published = True
             vehicle_info = CarlaEgoVehicleInfo()
             vehicle_info.type = self.carla_actor.type_id
+            vehicle_info.id = self.carla_actor.id
             vehicle_info.rolename = self.carla_actor.attributes.get('role_name')
             vehicle_physics = self.carla_actor.get_physics_control()
 
