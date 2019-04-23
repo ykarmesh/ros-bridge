@@ -36,10 +36,19 @@ def main():
             found = True
         elif found is True:
             binding_name = arg
+            break
 
-    module_name = os.path.basename(binding_name).split('.')[0]
-    sys.path.insert(0, os.path.dirname(binding_name))
-    module_agent = importlib.import_module(module_name)
+    module_agent = None
+    if binding_name:
+        module_name = os.path.basename(binding_name).split('.')[0]
+        sys.path.insert(0, os.path.dirname(binding_name))
+        print(os.path.dirname(binding_name))
+        print(module_name)
+        module_agent = importlib.import_module(module_name)
+    else:
+        sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/binding")
+        module_agent = importlib.import_module("RosBinding")
+
     binding = getattr(module_agent, module_agent.__name__)()
 
     print("Trying to connect to {host}:{port}".format(

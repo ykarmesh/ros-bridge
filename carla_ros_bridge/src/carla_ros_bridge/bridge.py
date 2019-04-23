@@ -14,21 +14,20 @@ Class that handle communication between CARLA and ROS
 import threading
 import time
 
-from carla_ros_bridge.map import Map
-from carla_ros_bridge.object_sensor import ObjectSensor
-
 from carla_ros_bridge.actor import Actor
-from carla_ros_bridge.spectator import Spectator
 from carla_ros_bridge.sensor import Sensor
-from carla_ros_bridge.traffic import Traffic, TrafficLight
-from carla_ros_bridge.vehicle import Vehicle
-from carla_ros_bridge.lidar import Lidar
-from carla_ros_bridge.gnss import Gnss
-from carla_ros_bridge.ego_vehicle import EgoVehicle
-from carla_ros_bridge.collision_sensor import CollisionSensor
-from carla_ros_bridge.lane_invasion_sensor import LaneInvasionSensor
-from carla_ros_bridge.camera import Camera, RgbCamera, DepthCamera, SemanticSegmentationCamera
 
+from carla_ros_bridge.actors.map import Map
+from carla_ros_bridge.actors.spectator import Spectator
+from carla_ros_bridge.actors.traffic import Traffic, TrafficLight
+from carla_ros_bridge.actors.vehicle import Vehicle
+from carla_ros_bridge.actors.lidar import Lidar
+from carla_ros_bridge.actors.gnss import Gnss
+from carla_ros_bridge.actors.ego_vehicle import EgoVehicle
+from carla_ros_bridge.actors.collision_sensor import CollisionSensor
+from carla_ros_bridge.actors.lane_invasion_sensor import LaneInvasionSensor
+from carla_ros_bridge.actors.camera import Camera, RgbCamera, DepthCamera, SemanticSegmentationCamera
+from carla_ros_bridge.actors.object_sensor import ObjectSensor
 
 class CarlaRosBridge(object):
 
