@@ -34,7 +34,7 @@ from carla_ros_bridge.actors.lane_invasion_sensor import LaneInvasionSensor
 from carla_ros_bridge.actors.camera import Camera, RgbCamera, DepthCamera, SemanticSegmentationCamera
 from carla_ros_bridge.actors.object_sensor import ObjectSensor
 
-class CarlaRosBridge(object):
+class CarlaBridge(object):
 
     """
     Carla Ros bridge
@@ -271,7 +271,7 @@ class CarlaRosBridge(object):
 def main():
     """
     main function for carla simulator ROS bridge
-    maintaining the communication client and the CarlaRosBridge object
+    maintaining the communication client and the CarlaBridge object
     """
 
     # get binding by using a plain parser (as e.g. ros adds additional
@@ -299,7 +299,7 @@ def main():
     print("Trying to connect to {host}:{port}".format(
         host=binding.get_parameters()['host'], port=binding.get_parameters()['port']))
 
-    carla_ros_bridge = None
+    carla_bridge = None
     carla_world = None
     carla_client = None
     try:
@@ -310,8 +310,8 @@ def main():
 
         carla_world = carla_client.get_world()
 
-        carla_ros_bridge = CarlaRosBridge(carla_client.get_world(), binding)
-        carla_ros_bridge.run()
+        carla_bridge = CarlaBridge(carla_client.get_world(), binding)
+        carla_bridge.run()
     finally:
         del carla_world
         del carla_client
