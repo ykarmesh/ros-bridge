@@ -53,7 +53,7 @@ class CarlaEgoVehicle(object):
         self.sensor_actors = []
         self.actor_filter = rospy.get_param('~vehicle_filter', 'vehicle.*')
         self.actor_spawnpoint = None
-        #check argument and set spawn_point
+        # check argument and set spawn_point
         spawn_point_param = rospy.get_param('~spawn_point')
         if len(spawn_point_param):
             spawn_point = spawn_point_param.split(',')
@@ -64,7 +64,7 @@ class CarlaEgoVehicle(object):
             pose.position.y = -float(spawn_point[1])
             pose.position.z = float(spawn_point[2])
             quat = quaternion_from_euler(
-                math.radians(float(spawn_point[3])), 
+                math.radians(float(spawn_point[3])),
                 math.radians(float(spawn_point[4])),
                 math.radians(float(spawn_point[5])))
             pose.orientation.x = quat[0]

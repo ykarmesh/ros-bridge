@@ -12,6 +12,7 @@ Classes to handle Carla vehicles
 import rospy
 
 from std_msgs.msg import ColorRGBA
+from nav_msgs.msg import Odometry
 from derived_object_msgs.msg import Object
 from shape_msgs.msg import SolidPrimitive
 from visualization_msgs.msg import Marker
@@ -40,7 +41,7 @@ class Vehicle(Actor):
         """
         return Vehicle(carla_actor=carla_actor, parent=parent)
 
-    def __init__(self, carla_actor, parent, topic_prefix=None, append_role_name_topic_postfix=True):
+    def __init__(self, carla_actor, parent, topic_prefix=None, append_role_name_topic_postfix=False):
         """
         Constructor
 
@@ -101,6 +102,14 @@ class Vehicle(Actor):
         """
         self.send_tf_msg()
         self.send_marker_msg()
+
+        #Publish odometry
+        odometry = Odometry(header=self.get_msg_header())
+        odometry.child_frame_id = self.get_frame_id()
+        odometry.pose.pose = self.get_current_ros_pose()
+        odometry.twist.twist = self.get_current_ros_twist()
+        self.publish_ros_message(self.topic_name() + "/odometry", odometry)
+
         super(Vehicle, self).update()
 
     def get_marker_color(self):
