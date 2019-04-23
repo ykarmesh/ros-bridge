@@ -25,4 +25,4 @@ Bring carla-python-api and carla-bridge into apollo directory
 
     export PYTHONPATH=$PYTHONPATH:/apollo/carla-python/carla/dist/carla-0.9.5-py2.7-linux-x86_64.egg:/apollo/carla-python/carla/:/apollo/ros-bridge/carla_ros_bridge/src/
 
-    python -s /apollo/ros-bridge/carla_ros_bridge/src/carla_ros_bridge/client.py --binding /apollo/ros-bridge/carla_ros_bridge/src/carla_ros_bridge/binding/LogBinding.py 
+    python -s /apollo/ros-bridge/carla_ros_bridge/src/carla_ros_bridge/bridge.py --binding /apollo/ros-bridge/carla_ros_bridge/src/carla_ros_bridge/binding/LogBinding.py 

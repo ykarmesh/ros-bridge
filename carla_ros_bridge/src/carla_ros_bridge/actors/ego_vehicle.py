@@ -10,7 +10,7 @@
 Classes to handle Carla vehicles
 """
 
-from carla_ros_bridge.vehicle import Vehicle
+from carla_ros_bridge.actors.vehicle import Vehicle
 
 
 class EgoVehicle(Vehicle):

@@ -9,10 +9,15 @@
 """
 Rosbridge class:
 
-Class that handle communication between CARLA and ROS
+Class that handle communication between CARLA and binding
 """
 import threading
 import time
+import importlib
+import sys
+import os
+
+import carla
 
 from carla_ros_bridge.actor import Actor
 from carla_ros_bridge.sensor import Sensor
@@ -262,3 +267,61 @@ class CarlaRosBridge(object):
                 self.get_binding().logwarn("Update actor {}({}) failed: {}".format(
                     self.actors[actor_id].__class__.__name__, actor_id, e))
                 continue
+
+def main():
+    """
+    main function for carla simulator ROS bridge
+    maintaining the communication client and the CarlaRosBridge object
+    """
+
+    # get binding by using a plain parser (as e.g. ros adds additional
+    # parameters to working with default argparse module)
+    binding = None
+    args = sys.argv[1:]
+    found = False
+    binding_name = None
+    for arg in args:
+        if arg == '--binding':
+            found = True
+        elif found is True:
+            binding_name = arg
+            break
+
+    module_agent = None
+    if binding_name:
+        module_name = os.path.basename(binding_name).split('.')[0]
+        sys.path.insert(0, os.path.dirname(binding_name))
+        print(os.path.dirname(binding_name))
+        print(module_name)
+        module_agent = importlib.import_module(module_name)
+    else:
+        print("Please specify --binding")
+        sys.exit(1)
+        sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/binding")
+        module_agent = importlib.import_module("RosBinding")
+
+    binding = getattr(module_agent, module_agent.__name__)()
+
+    print("Trying to connect to {host}:{port}".format(
+        host=binding.get_parameters()['host'], port=binding.get_parameters()['port']))
+
+    carla_ros_bridge = None
+    carla_world = None
+    carla_client = None
+    try:
+        carla_client = carla.Client(
+            host=binding.get_parameters()['host'],
+            port=binding.get_parameters()['port'])
+        carla_client.set_timeout(2000)
+
+        carla_world = carla_client.get_world()
+
+        carla_ros_bridge = CarlaRosBridge(carla_client.get_world(), binding)
+        carla_ros_bridge.run()
+    finally:
+        del carla_world
+        del carla_client
+
+
+if __name__ == "__main__":
+    main()
