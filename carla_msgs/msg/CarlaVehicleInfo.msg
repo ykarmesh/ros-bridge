@@ -6,8 +6,9 @@
 #
 
 string type
+uint32 id 
 string rolename
-CarlaEgoVehicleInfoWheel[] wheels
+CarlaVehicleInfoWheel[] wheels
 float32 max_rpm
 float32 moi
 float32 damping_rate_full_throttle

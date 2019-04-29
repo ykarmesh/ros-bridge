@@ -137,7 +137,7 @@ Currently the following sensors are supported:
 |--------------------------------------|------|
 | `/carla/<ROLE NAME>/vehicle_control_cmd` (subscriber) | [carla_msgs.CarlaEgoVehicleControl](carla_msgs/msg/CarlaEgoVehicleControl.msg) |
 | `/carla/<ROLE NAME>/vehicle_status` | [carla_msgs.CarlaEgoVehicleStatus](carla_msgs/msg/CarlaEgoVehicleStatus.msg) |
-| `/carla/<ROLE NAME>/vehicle_info` | [carla_msgs.CarlaEgoVehicleInfo](carla_msgs/msg/CarlaEgoVehicleInfo.msg) |
+| `/carla/<ROLE NAME>/vehicle_info` | [carla_msgs.CarlaVehicleInfo](carla_msgs/msg/CarlaVehicleInfo.msg) |
 
 You can stear the ego vehicle from the commandline by publishing to the topic `/carla/<ROLE NAME>/vehicle_control_cmd`.
 

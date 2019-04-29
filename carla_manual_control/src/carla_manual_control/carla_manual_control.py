@@ -41,7 +41,7 @@ from carla_msgs.msg import CarlaCollisionEvent  # pylint: disable=no-name-in-mod
 from carla_msgs.msg import CarlaLaneInvasionEvent  # pylint: disable=no-name-in-module, import-error
 from carla_msgs.msg import CarlaEgoVehicleControl  # pylint: disable=no-name-in-module, import-error
 from carla_msgs.msg import CarlaEgoVehicleStatus  # pylint: disable=no-name-in-module, import-error
-from carla_msgs.msg import CarlaEgoVehicleInfo  # pylint: disable=no-name-in-module, import-error
+from carla_msgs.msg import CarlaVehicleInfo  # pylint: disable=no-name-in-module, import-error
 
 try:
     import pygame
@@ -272,9 +272,9 @@ class HUD(object):
         self.vehicle_status = CarlaEgoVehicleStatus()
         self.vehicle_status_subscriber = rospy.Subscriber(
             "/carla/ego_vehicle/vehicle_status", CarlaEgoVehicleStatus, self.vehicle_status_updated)
-        self.vehicle_info = CarlaEgoVehicleInfo()
+        self.vehicle_info = CarlaVehicleInfo()
         self.vehicle_info_subscriber = rospy.Subscriber(
-            "/carla/ego_vehicle/vehicle_info", CarlaEgoVehicleInfo, self.vehicle_info_updated)
+            "/carla/ego_vehicle/vehicle_info", CarlaVehicleInfo, self.vehicle_info_updated)
         self.latitude = 0
         self.longitude = 0
         self.manual_control = False

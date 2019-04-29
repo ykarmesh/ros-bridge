@@ -20,7 +20,7 @@ from dynamic_reconfigure.server import Server
 from ackermann_msgs.msg import AckermannDrive
 from carla_msgs.msg import CarlaEgoVehicleStatus  # pylint: disable=no-name-in-module,import-error
 from carla_msgs.msg import CarlaEgoVehicleControl  # pylint: disable=no-name-in-module,import-error
-from carla_msgs.msg import CarlaEgoVehicleInfo  # pylint: disable=no-name-in-module,import-error
+from carla_msgs.msg import CarlaVehicleInfo  # pylint: disable=no-name-in-module,import-error
 from carla_ackermann_control.msg import EgoVehicleControlInfo  # pylint: disable=no-name-in-module,import-error
 from carla_ackermann_control.cfg import EgoVehicleControlParameterConfig  # pylint: disable=no-name-in-module,import-error
 import carla_control_physics as phys  # pylint: disable=relative-import
@@ -40,7 +40,7 @@ class CarlaAckermannControl(object):
         self.control_loop_rate = rospy.Rate(10)  # 10Hz
         self.lastAckermannMsgReceived = datetime.datetime(datetime.MINYEAR, 1, 1)
         self.vehicle_status = CarlaEgoVehicleStatus()
-        self.vehicle_info = CarlaEgoVehicleInfo()
+        self.vehicle_info = CarlaVehicleInfo()
         self.role_name = rospy.get_param('/carla/ackermann_control/role_name')
         # control info
         self.info = EgoVehicleControlInfo()
@@ -122,7 +122,7 @@ class CarlaAckermannControl(object):
         # vehicle info
         self.vehicle_info_subscriber = rospy.Subscriber(
             "/carla/" + self.role_name + "/vehicle_info",
-            CarlaEgoVehicleInfo, self.vehicle_info_updated)
+            CarlaVehicleInfo, self.vehicle_info_updated)
 
         # to send command to carla
         self.carla_control_publisher = rospy.Publisher(

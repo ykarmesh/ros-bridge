@@ -43,6 +43,7 @@ class Vehicle(Actor):
                                       binding=binding,
                                       topic_prefix=topic_prefix)
 
+        self.vehicle_info_published = False
         self.classification = VehicleClass.UNKNOWN
         if carla_actor.attributes.has_key('object_type'):
             if carla_actor.attributes['object_type'] == 'car':
@@ -86,6 +87,11 @@ class Vehicle(Actor):
                                           self.carla_actor.bounding_box,
                                           self.get_marker_color(),
                                           self.get_global_id())
+        if not self.vehicle_info_published:
+            self.vehicle_info_published = True
+            self.get_binding().publish_ego_vehicle_info(
+                self.get_topic_prefix() + "/vehicle_info",
+                self.carla_actor)
         super(Vehicle, self).update()
 
     @classmethod

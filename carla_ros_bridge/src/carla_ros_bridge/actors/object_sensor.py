@@ -11,7 +11,7 @@ handle a object sensor
 
 import carla
 
-from carla_ros_bridge.vehicle import Vehicle
+from carla_ros_bridge.actors.vehicle import Vehicle
 from carla_ros_bridge.pseudo_actor import PseudoActor
 
 
@@ -66,6 +66,5 @@ class ObjectSensor(PseudoActor):
             if self.filtered_id is not actor_id:
                 actor = self.actor_list[actor_id]
                 if isinstance(actor, Vehicle):
-                    print("{} vs {}: {}".format(self.filtered_id, actor_id, actor))
                     object_info_list.append(actor.get_object_info())
         self.binding.publish_objects(self.topic_prefix, object_info_list)

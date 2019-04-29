@@ -23,8 +23,8 @@ from cv_bridge import CvBridge
 
 from nav_msgs.msg import Odometry
 
-from carla_msgs.msg import CarlaEgoVehicleInfo
-from carla_msgs.msg import CarlaEgoVehicleInfoWheel
+from carla_msgs.msg import CarlaVehicleInfo
+from carla_msgs.msg import CarlaVehicleInfoWheel
 from carla_msgs.msg import CarlaEgoVehicleControl
 from carla_msgs.msg import CarlaEgoVehicleStatus
 from carla_msgs.msg import CarlaMapInfo
@@ -38,7 +38,7 @@ from sensor_msgs.point_cloud2 import create_cloud_xyz32
 
 from geometry_msgs.msg import TransformStamped
 
-from std_msgs.msg import Header, Bool
+from std_msgs.msg import Header, Bool, UInt32MultiArray
 from derived_object_msgs.msg import Object, ObjectArray
 from shape_msgs.msg import SolidPrimitive
 from visualization_msgs.msg import Marker
@@ -390,7 +390,7 @@ class RosBinding(object):
         point_cloud_msg = create_cloud_xyz32(header, lidar_data)
         self.publish_message(topic_prefix + "/point_cloud", point_cloud_msg)
 
-    def publish_ego_vehicle_info(self, topic, type_id, rolename, vehicle_physics):
+    def publish_ego_vehicle_info(self, topic, actor):
         """
         Function (override) to send odometry message of the ego vehicle
         instead of an object message.
@@ -400,12 +400,15 @@ class RosBinding(object):
 
         :return:
         """
-        vehicle_info = CarlaEgoVehicleInfo()
-        vehicle_info.type = type_id
-        vehicle_info.rolename = rolename
 
+        vehicle_info = CarlaVehicleInfo()
+        vehicle_info.id = actor.id
+        vehicle_info.type = actor.type_id
+        vehicle_info.rolename = actor.attributes.get('role_name')
+
+        vehicle_physics = actor.get_physics_control()
         for wheel in vehicle_physics.wheels:
-            wheel_info = CarlaEgoVehicleInfoWheel()
+            wheel_info = CarlaVehicleInfoWheel()
             wheel_info.tire_friction = wheel.tire_friction
             wheel_info.damping_rate = wheel.damping_rate
             wheel_info.steer_angle = math.radians(wheel.steer_angle)
@@ -579,3 +582,10 @@ class RosBinding(object):
                 vehicle_object.classification_age = obj['classification_age']
             ros_objects.objects.append(vehicle_object)
         self.publish_message(topic, ros_objects)
+
+    def publish_actor_list(self, carla_actors):
+        """
+        publish existing actors
+        """
+        for actor in carla_actors:
+            print(actor)

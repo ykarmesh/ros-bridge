@@ -33,8 +33,6 @@ class EgoVehicle(Vehicle):
                                          binding=binding,
                                          topic_prefix=carla_actor.attributes.get('role_name'))
 
-        self.vehicle_info_published = False
-
         self.get_binding().register_vehicle_control_subscriber(
             self.get_topic_prefix(), self.control_command_updated)
         self.get_binding().register_vehicle_autopilot_subscriber(
@@ -58,13 +56,6 @@ class EgoVehicle(Vehicle):
 
         :return:
         """
-        if not self.vehicle_info_published:
-            self.vehicle_info_published = True
-            self.get_binding().publish_ego_vehicle_info(
-                self.get_topic_prefix(),
-                self.carla_actor.type_id,
-                self.carla_actor.attributes.get('role_name'),
-                self.carla_actor.get_physics_control())
         self.get_binding().publish_ego_vehicle_status(self.get_topic_prefix(),
                                                       self.carla_actor.get_velocity(),
                                                       self.carla_actor.get_transform(),

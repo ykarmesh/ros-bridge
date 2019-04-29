@@ -13,8 +13,8 @@ add_message_files(
   FILES
   CarlaEgoVehicleControl.msg
   CarlaEgoVehicleStatus.msg
-  CarlaEgoVehicleInfoWheel.msg
-  CarlaEgoVehicleInfo.msg
+  CarlaVehicleInfoWheel.msg
+  CarlaVehicleInfo.msg
   CarlaCollisionEvent.msg
   CarlaLaneInvasionEvent.msg
   CarlaMapInfo.msg
