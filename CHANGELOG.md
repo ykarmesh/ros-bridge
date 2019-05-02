@@ -1,5 +1,6 @@
 ## Latest changed
 
+* include 3d acceleration in CarlaEgoVehicleStatus
 * rename carla_ros_bridge_msgs to carla_msgs
 * remove 'challenge' mode
 

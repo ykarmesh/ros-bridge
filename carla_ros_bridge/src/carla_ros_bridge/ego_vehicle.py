@@ -98,7 +98,11 @@ class EgoVehicle(Vehicle):
         vehicle_status = CarlaEgoVehicleStatus()
         vehicle_status.header.stamp = self.get_current_ros_time()
         vehicle_status.velocity = self.get_vehicle_speed_abs(self.carla_actor)
-        vehicle_status.acceleration = self.get_vehicle_acceleration_abs(self.carla_actor)
+
+        carla_acceleration = self.carla_actor.get_acceleration()
+        vehicle_status.acceleration.x = carla_acceleration.x
+        vehicle_status.acceleration.y = carla_acceleration.y
+        vehicle_status.acceleration.z = carla_acceleration.z
         vehicle_status.orientation = self.get_current_ros_pose().orientation
         vehicle_status.control.throttle = self.carla_actor.get_control().throttle
         vehicle_status.control.steer = self.carla_actor.get_control().steer
