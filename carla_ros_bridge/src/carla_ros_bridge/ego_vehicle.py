@@ -101,7 +101,7 @@ class EgoVehicle(Vehicle):
 
         carla_acceleration = self.carla_actor.get_acceleration()
         vehicle_status.acceleration.x = carla_acceleration.x
-        vehicle_status.acceleration.y = carla_acceleration.y
+        vehicle_status.acceleration.y = -carla_acceleration.y
         vehicle_status.acceleration.z = carla_acceleration.z
         vehicle_status.orientation = self.get_current_ros_pose().orientation
         vehicle_status.control.throttle = self.carla_actor.get_control().throttle
