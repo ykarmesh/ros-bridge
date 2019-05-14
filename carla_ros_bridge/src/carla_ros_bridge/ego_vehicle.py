@@ -14,6 +14,7 @@ import math
 import rospy
 
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import TwistStamped
 from std_msgs.msg import ColorRGBA
 from std_msgs.msg import Bool
 
@@ -154,6 +155,11 @@ class EgoVehicle(Vehicle):
         odometry.twist.twist = self.get_current_ros_twist()
 
         self.publish_ros_message(self.topic_name() + "/odometry", odometry)
+
+        twist_stamped = TwistStamped(header=self.get_msg_header())
+        twist_stamped.header.frame_id = "ego_vehicle"
+        twist_stamped.twist = odometry.twist.twist
+        self.publish_ros_message(self.topic_name() + "/twist", twist_stamped)
 
     def update(self):
         """
