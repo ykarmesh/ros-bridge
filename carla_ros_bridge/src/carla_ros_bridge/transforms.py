@@ -206,9 +206,9 @@ def carla_velocity_to_ros_twist(carla_velocity, carla_angular_velocity, carla_ro
     ros_twist.linear.x = rotated_linear_vector[0]
     ros_twist.linear.y = -rotated_linear_vector[1]
     ros_twist.linear.z = rotated_linear_vector[2]
-    ros_twist.angular.x = -carla_angular_velocity.x
-    ros_twist.angular.y = -carla_angular_velocity.y
-    ros_twist.angular.z = -carla_angular_velocity.z
+    ros_twist.angular.x = -math.radians(carla_angular_velocity.x)
+    ros_twist.angular.y = -math.radians(carla_angular_velocity.y)
+    ros_twist.angular.z = -math.radians(carla_angular_velocity.z)
     return ros_twist
 
 
