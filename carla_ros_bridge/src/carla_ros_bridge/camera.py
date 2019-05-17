@@ -343,7 +343,7 @@ class SemanticSegmentationCamera(Camera):
         :rtype tuple(numpy.ndarray, string)
         """
 
-        carla_image.convert(carla.ColorConverter.CityScapesPalette)
+        carla_image.convert(carla.ColorConverter.Raw)
         carla_image_data_array = numpy.ndarray(
             shape=(carla_image.height, carla_image.width, 4),
             dtype=numpy.uint8, buffer=carla_image.raw_data)
